@@ -44,6 +44,30 @@ class _PdfViewerState extends State<PdfViewer> {
       Completer<PDFViewController>();
   final Key pdfKey = const Key('pdfKey');
 
+  // save theme to shred preferences
+  Future<void> saveThemeToSharedPrefs(bool val, bool valForPdf) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setBool('theme', val);
+    prefs.setBool('pdf_theme', valForPdf);
+  }
+
+  // get theme from shred preferences
+  Future<void> getThemeFromSharedPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.getBool('pdf_theme') != null) {
+      if (prefs.getBool('pdf_theme') == true) {
+        setState(() {
+          isNightMode = true;
+        });
+      } else {
+        setState(() {
+          isNightMode = false;
+        });
+      }
+    }
+  }
+
   //add the current page to shared preferences
 
   Future<void> savePage(int index) async {
@@ -74,6 +98,8 @@ class _PdfViewerState extends State<PdfViewer> {
   @override
   void initState() {
     super.initState();
+    getThemeFromSharedPrefs();
+
     if (initialPage == null && widget.initPage == null) {
       getPage();
     } else if (widget.initPage != null) {
@@ -205,7 +231,8 @@ class _PdfViewerState extends State<PdfViewer> {
                 onPressed: () {
                   setState(() {
                     isNightMode = !isNightMode;
-                    MyApp.of(context).changeTheme();
+                    bool isDarkEnabled = MyApp.of(context).changeTheme();
+                    saveThemeToSharedPrefs(isDarkEnabled, isNightMode);
                   });
                 },
               ),
