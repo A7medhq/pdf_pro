@@ -7,7 +7,9 @@ import 'package:pdf_pro/screens/pdfview.dart';
 
 class SplashScreen extends StatefulWidget {
   static const String id = '/splash_screen';
-  const SplashScreen({Key? key}) : super(key: key);
+  int? initPage;
+
+  SplashScreen({Key? key, this.initPage}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -31,6 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
             MaterialPageRoute(
                 builder: (context) => PdfViewer(
                       path: pdfPath,
+                      initPage: widget.initPage,
                     )));
       }
     });
